@@ -12,6 +12,10 @@ function App() {
     setError("")
   }
 
+
+
+
+
   async function getDatasetFromGobByTheme() {
     try {
       const response = await fetch(`https://datos.gob.es/apidata/catalog/dataset/theme/medio-ambiente?_sort=title&_pageSize=10&_page=0`)
@@ -27,25 +31,25 @@ function App() {
     };
   }
 
- async function getSenadors() {
-    try {
-      const res = await fetch("/api/senadors");
-      if (!res.ok) throw new Error(`Oops! ${res.status} ${res.statusText}`);
-      const listSens = await res.json();
-      console.log("in app.jsx res was jsoned : " + listSens)
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+//  async function getSenadors() {
+//     try {
+//       const res = await fetch("/api/senadors");
+//       if (!res.ok) throw new Error(`Oops! ${res.status} ${res.statusText}`);
+//       const listSens = await res.json();
+//       console.log("in app.jsx res was jsoned : " + listSens)
+//     } catch (error) {
+//       setError(error.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   }
 
 
   return (
     <>
-     Welcome to the Green Army
+     Welcome to the Green Army Co.
      <button onClick={(e) => handleSubmit(e)}> u click me i give dataset </button>
-     <button onClick = {getSenadors}> oi oi oi the people</button>
+     
     </>
   )
 }
