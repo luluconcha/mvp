@@ -1,15 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const db = require("../model/helper");
-require("dotenv").config();
-const {OpenAI} = require("openai");
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
-const openai = new OpenAI({apiKey: `${OPENAI_API_KEY}`});
+
 
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-// res.send('index', { title: 'Express' });
-// });
+router.get('/', function(req, res, next) {
+  res.send({msg: "we're here"})
+});
 
 // async function getPoliticians(req, res) {
 //   try {
@@ -21,23 +18,60 @@ const openai = new OpenAI({apiKey: `${OPENAI_API_KEY}`});
 // }
 // router.get("/politicians", (req, res, next) => next());
 
-// router.get('/politicians', async function(req, res, next) {
-// res.send()
-// })
+async function getRandomPolitician(req, res) {
+  try {
+    const rando = await db("SELECT * FROM politicians ORDER BY RAND() LIMIT 1;")
+    const webpage = await db(`SELECT webpage FROM parties WHERE id=${req.params.id}`)
 
-// async function createMail(){
-//   const completion = await openai.completions.create({
-//     model: "gpt-3.5-turbo",
-//     prompt: "Escribeme un mensaje para un senador criticandole de sus pocos esfuerzos. Ha de ser corto.",
-//     max_tokens: 250,
-//     temperature: 1.2,  /// from 0 to 2 how funky do you want it
-//     frequency_penalty: -0.7, // using new words
-//   })
-// const mail = completion.choices[0].text;
-// console.log(mail)
-// }
+ 
+  } catch (err) {
+    res.status(404).send({ msg : "we could not get a random politician in this day and age"})
+  }
+}
+
+import React from 'react'
+import OpenAI from "openai"
+import 'dotenv/config'
+
+// const {OpenAI} = require("openai");
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+const openai = new OpenAI({apiKey: `${OPENAI_API_KEY}`});
+
+async function createMail(){
+  const completion = await openai.completions.create({
+    model: "gpt-3.5-turbo",
+    prompt: "Escribeme un mensaje para un senador criticandole de sus pocos esfuerzos. Ha de ser corto.",
+    max_tokens: 250,
+    temperature: 1.2,  /// from 0 to 2 how funky do you want it
+    frequency_penalty: -0.7, // using new words
+  })
+const mail = completion.choices[0].text;
+console.log(mail)
+}
 
 // createMail();
-// router.use(getPoliticians);
+
+// async function getWebpage(party_id) {
+//   try {
+//     const webpage = await db(`SELECT webpage FROM parties WHERE id=${party_id}`)
+//     res.send(webpage.data)
+//   } catch (err) {
+//     res.status(404).send({ msg : "no webpage was found"})
+//   }
+// }
+
+router.get("/politician", (req, res, next) => next())
+
+router.get("/webpage/:id", async (req, res) => {
+  try {
+    const webpage = await db(`SELECT webpage FROM parties WHERE id=${req.params.id}`)
+    res.send(webpage.data)
+  } catch (err) {
+    res.status(404).send({ msg : "the web is dead"})
+  }
+})
+
+
+router.use(getRandomPolitician);
 
 module.exports = router;
