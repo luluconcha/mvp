@@ -94,6 +94,7 @@ async function addSenatorsToDatabases() {
 addSenatorsToDatabases();
 
 
+
 // async function getEmailAddressesOfDiputados() {
 //   const browser = await puppeteer.launch({ headless:false, defaultViewport: null});
 //   const page = await browser.newPage();
@@ -106,22 +107,22 @@ addSenatorsToDatabases();
 //     })
 //   }
 
-  // await page.goto("https://www.congreso.es/es/busqueda-de-diputados", {waitUntil: "domcontentloaded"})
+// await page.goto("https://www.congreso.es/es/busqueda-de-diputados", {waitUntil: "domcontentloaded"})
 
-  // const addresses = await page.evaluate(async () => {
-  //   const bodyOfPage = document.querySelector("#_diputadomodule_contentPaginationDiputados > table > tbody")
-  //   for (let dip in bodyOfPage) {
-  //     const nextLink = document.querySelector(`${dip} > tr > th > a`)
-  //     await page.goto(nextLink.href)
-  //     const getMailDip = await page.evaluate(() => {
-  //       const email = document.querySelector("div.email-dip > a").href
-  //       console.log(email)
-  //     })
-  //   }
-  // })
+// const addresses = await page.evaluate(async () => {
+//   const bodyOfPage = document.querySelector("#_diputadomodule_contentPaginationDiputados > table > tbody")
+//   for (let dip in bodyOfPage) {
+//     const nextLink = document.querySelector(`${dip} > tr > th > a`)
+//     await page.goto(nextLink.href)
+//     const getMailDip = await page.evaluate(() => {
+//       const email = document.querySelector("div.email-dip > a").href
+//       console.log(email)
+//     })
+//   }
+// })
 
-  // await new Promise(r => setTimeout(r, 240000));
-  // await browser.close()
+// await new Promise(r => setTimeout(r, 240000));
+// await browser.close()
 
 // }
 
