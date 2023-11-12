@@ -1,27 +1,9 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+  background: #000000 none no-repeat scroll 0 0;
+  color:#59758e;
+  font-family: 'retro_gaming';
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
 
 body {
   margin: 0;
@@ -29,6 +11,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  line-height: normal;
 }
 
 h1 {
@@ -46,6 +29,7 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  color: white;
 }
 button:hover {
   border-color: #646cff;
@@ -55,15 +39,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+.mainMenu {
+  border: 5px dashed #A4A19D;
+  border-radius: 22px;
+  padding:10em
+}
+
+@font-face {
+  font-family: 'retro_gaming';
+  src: local('retro_gaming'), url(./fonts/retro_gaming.ttf) format('truetype');
+}
+
+.total_msgs {
+  position: absolute;
+  bottom: 0;
+  text-align:center;
+}
+
+@keyframes loading {
+  
 }

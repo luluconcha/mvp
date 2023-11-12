@@ -22,7 +22,7 @@ con.connect(function(err) {
   let sql = fs.readFileSync(__dirname + "/init_db.sql").toString();
   con.query(sql, function(err, result) {
     if (err) throw err;
-    console.log("Table creation `items` was successful!");
+    console.log("Tables for politicians and parties succesfully created!");
 
     console.log("Closing...");
   });

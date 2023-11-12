@@ -1,33 +1,34 @@
-import { useState } from 'react'
 import './App.css'
+import {Route, Routes, Link} from 'react-router-dom'
+import About from "./pages/About"
 import SendMailPage from './pages/SendMailPage'
-import Stats from './pages/Stats'
+import MainMenu from "./pages/MainMenu"
+import Suggestions from "./pages/Suggestions"
+import TotalMsgs from "./components/TotalMsgs"
 
 function App() {
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("")
-  }
-
-
 
   return (
-    <>
-     Welcome to the Green Army Co.
-     <button> u click me i give dataset </button>
-     <div>
-      <Link to="/"></Link>
-     </div>
+    <div>
+  
      <Routes>
-        <Route path="/" element={<SendMailPage />} />
+      
+        <Route path="/createmail" element={<SendMailPage/>} >
+        <Route path="/createmail/:id" element={<SendMailPage/>} />
+        </Route>
+        <Route path="/about" element={<About/>} />
+        <Route path="/" element={<MainMenu />} />
+        <Route path="/suggestions" element={<Suggestions/>} />
+        
 
      </Routes>
-    </>
+     
+     <div className="total_msgs">
+        <TotalMsgs></TotalMsgs>
+     </div>
+     
+    </div>
   )
 }
 
-export default App
+export default App;

@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer')
 async function addSenatorsToDatabases() {
   //// open a new browser, args are setting the visibility and view
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
     defaultViewport: null,
   });
   const page = await browser.newPage();
@@ -14,7 +14,7 @@ async function addSenatorsToDatabases() {
     { waitUntil: "domcontentloaded" }
   );
 
-  const addresses = await page.evaluate(() => {
+  const senators = await page.evaluate(() => {
     const allSenators = document.querySelectorAll(
       "li.alterna three-col, li.three-col"
     );
@@ -41,50 +41,30 @@ async function addSenatorsToDatabases() {
   // for (const party of listOfParties) {
   //   db(`INSERT INTO politicians (party) VALUES ("${party}")`)
   // }
-  const listOfParties = []
-
-  for (const address of addresses) {
-    if (!listOfParties.includes(address.party)) listOfParties.push(address.party)
-
-    db(
-      `INSERT INTO politicians (name, email_address, party, msgs_sent) VALUES ("${address.name}", "${address.email}", "${address.party}", 0);`
-    )
-  }
+  
+  const listOfParties = [...new Set(senators.map((senator) => senator.party))]
   // console.log(listOfParties)
-  for (const party of listOfParties){
 
-      //1
-      if (party=== "GRUPO PARLAMENTARIO POPULAR EN EL SENADO") 
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://www.pp.es/actualidad/noticias");`)
-      
-      //2
-      if (party=== "GRUPO PARLAMENTARIO VASCO EN EL SENADO (EAJ-PNV)") 
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://senado.eaj-pnv.eus/es/noticias/");`)
-      
-      //3
-      if (party=== "GRUPO PARLAMENTARIO PLURAL EN EL SENADO JUNTS PER CATALUNYA-COALICIÓN CANARIA-AGRUPACIÓN HERREÑA INDEPENDIENTE-BLOQUE NACIONALISTA GALEGO")
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://videoservlet.senado.es/web/composicionorganizacion/gruposparlamentarios/composiciongruposparlamentarios/fichaGrupoParlamentario/iniciativasgrupo/index.html?lang=es_ES&id=807&id2=713&id3=S&id4=14");`)
-      
-      //4
-      if (party=== "GRUPO PARLAMENTARIO SOCIALISTA")
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://www.psoe.es/congreso/noticias-congreso/");`)
-      
-      //5
-      if (party=== "GRUPO PARLAMENTARIO MIXTO")
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://www.senado.es/web/composicionorganizacion/gruposparlamentarios/composiciongruposparlamentarios/fichaGrupoParlamentario/iniciativasgrupo/index.html;jsessionid=DWLblLSXnq1622xLvJSjmy1p0lJ1BXnGFfhQQpQNy32P7S5m2LrR!-705651948?id=806&id2=711&id3=S&id4=15");`)
-      
-      //6
-      if (party=== "GRUPO PARLAMENTARIO IZQUIERDA CONFEDERAL (MÁS MADRID, EIVISSA I FORMENTERA AL SENAT, COMPROMÍS, AGRUPACIÓN SOCIALISTA GOMERA Y GEROA BAI)") 
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://www.senado.es/web/actividadparlamentaria/actualidad/noticias/index.html");`)
-      
-      //7
-      if (party=== "GRUPO PARLAMENTARIO IZQUIERDAS POR LA INDEPENDENCIA (ESQUERRA REPUBLICANA-EUSKAL HERRIA BILDU)")
-      db (`INSERT INTO parties (party, webpage) VALUES ("${party}", "https://www.esquerra.cat/ca/inici");`)
+  const webpages = {
+    "GRUPO PARLAMENTARIO POPULAR EN EL SENADO" : "https://www.pp.es/actualidad/noticias",
+    "GRUPO PARLAMENTARIO VASCO EN EL SENADO (EAJ-PNV)" : "https://senado.eaj-pnv.eus/es/noticias/",
+    "GRUPO PARLAMENTARIO PLURAL EN EL SENADO JUNTS PER CATALUNYA-COALICIÓN CANARIA-AGRUPACIÓN HERREÑA INDEPENDIENTE-BLOQUE NACIONALISTA GALEGO" : "https://videoservlet.senado.es/web/composicionorganizacion/gruposparlamentarios/composiciongruposparlamentarios/fichaGrupoParlamentario/iniciativasgrupo/index.html?lang=es_ES&id=807&id2=713&id3=S&id4=14",
+    "GRUPO PARLAMENTARIO SOCIALISTA" : "https://www.psoe.es/congreso/noticias-congreso/",
+    "GRUPO PARLAMENTARIO MIXTO" : "https://www.senado.es/web/composicionorganizacion/gruposparlamentarios/composiciongruposparlamentarios/fichaGrupoParlamentario/iniciativasgrupo/index.html;jsessionid=DWLblLSXnq1622xLvJSjmy1p0lJ1BXnGFfhQQpQNy32P7S5m2LrR!-705651948?id=806&id2=711&id3=S&id4=15",
+    "GRUPO PARLAMENTARIO IZQUIERDA CONFEDERAL (MÁS MADRID, EIVISSA I FORMENTERA AL SENAT, COMPROMÍS, AGRUPACIÓN SOCIALISTA GOMERA Y GEROA BAI)" : "https://www.senado.es/web/actividadparlamentaria/actualidad/noticias/index.html",
+    "GRUPO PARLAMENTARIO IZQUIERDAS POR LA INDEPENDENCIA (ESQUERRA REPUBLICANA-EUSKAL HERRIA BILDU)" : "https://www.esquerra.cat/ca/inici",
+  }
 
   
-  } 
- 
-// run one db at a time, otherwise it breaks
+  for (const party of listOfParties) {
+    await db(`INSERT INTO parties (party, webpage) VALUES ("${party}", "${webpages[party]}");`)
+  }
+  
+  for (const senator of senators) {
+  // const party_id = await db(`SELECT id FROM parties WHERE party="${senator.party}";`)
+  
+    await db(`INSERT INTO politicians (name, email_address, msgs_sent, party) VALUES ("${senator.name}", "${senator.email}", 0, "${senator.party}");`)
+  }
 
   await new Promise((r) => setTimeout(r, 240000));
   await browser.close();
@@ -102,7 +82,7 @@ addSenatorsToDatabases();
 //   for (let i = 0; i < numberOfDiputados; i++) {
 //     await page.goto("https://www.congreso.es/es/busqueda-de-diputados?p_p_id=diputadomodule&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_diputadomodule_mostrarFicha=true&codParlamentario="+i+"&idLegislatura=XV&mostrarAgenda=false", {waitUntil: "domcontentloaded"})
 //     let emails = await page.evaluate(() => {
-//       const email = document.querySelector("div.email-dip > a")
+//       const email = document.waitForSelector("div.email-dip > a")
 //       console.log(email)
 //     })
 //   }
@@ -114,9 +94,9 @@ addSenatorsToDatabases();
 //   for (let dip in bodyOfPage) {
 //     const nextLink = document.querySelector(`${dip} > tr > th > a`)
 //     await page.goto(nextLink.href)
-//     const getMailDip = await page.evaluate(() => {
-//       const email = document.querySelector("div.email-dip > a").href
-//       console.log(email)
+//     const getMailDip = await page.evaluate(async () => {
+//       const email = document.waitForSelector("div.email-dip > a").href
+      
 //     })
 //   }
 // })
