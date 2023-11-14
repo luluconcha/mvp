@@ -34,8 +34,19 @@
   border-radius: 10px;  
 }
 
-/* trying out stuff that is not working with these damn buttons */
 #magic1:focus{
+  border: 5px dashed #A4A19D;
+  border-radius: 22px;
+  border-color: greenyellow;
+}
+
+#magic2:focus{
+  border: 5px dashed #A4A19D;
+  border-radius: 22px;
+  border-color: whitesmoke;
+}
+
+#magic3:focus{
   border: 5px dashed #A4A19D;
   border-radius: 22px;
 }

@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom'
 
 export default function Suggestions() {
     const [error, setError] = useState("")
-    const [loading, setLoading] = useState(false)
     const [input, setInput] = useState("")
     const [message, setMessage] = useState("")
 
@@ -16,12 +15,12 @@ async function handleSuggestion() {
             body: JSON.stringify({ suggestion : input})
         });
         if (!response.ok) throw new Error(`Oops! ${response.status} ${response.statusText}`);
-        setMessage(response.message)
+        setMessage("thank you!")
+        setTimeout(() => setMessage(""), 1000)
     } catch (error) {
         setError(error);
-        console.log("the gods have rejected your suggestion");
+        setMessage("the gods have rejected your suggestion");
     } finally {
-        setLoading(false);
         setInput("");
     }
     }
@@ -32,7 +31,6 @@ const handleInput = event => {
 
 const handleSubmit = event => {
     event.preventDefault();
-    setLoading(true);
     setError("");
     handleSuggestion();
 };
@@ -40,10 +38,11 @@ const handleSubmit = event => {
   return (
     <div>Suggestions <br/><br/>
 
-        <input id="suggestions" type="text" value={input} onChange={e => handleInput(e)}></input> <br/><br/>
+        <textarea id="suggestions" type="text" value={input} onChange={e => handleInput(e)}></textarea> <br/><br/>
             <button type="submit" onClick={e => handleSubmit(e)}> BURN IT </button><br/><br/>
             <br/>
             {message}
+            
             <br/><br/>
         <Link id="homebutton" to="/"><button> go home </button> </Link>
     </div>

@@ -15,7 +15,7 @@ async function addSenatorsToDatabases() {
     "https://www.senado.es/web/relacionesciudadanos/participacion/senadores/index.html",
     { waitUntil: "domcontentloaded" }
   );
-  /// go in the page and 'navigate' it ('evaluate')
+ 
   const senators = await page.evaluate(() => {
     const allSenators = document.querySelectorAll(
       "li.alterna three-col, li.three-col"
@@ -54,7 +54,7 @@ async function addSenatorsToDatabases() {
 
   
   for (const party of listOfParties) {
-    await db(`INSERT INTO parties (party, webpage) VALUES ("${party}", "${webpages[party]}");`)
+    await db(`INSERT INTO parties (party, organ, webpage) VALUES ("${party}", "Senado", "${webpages[party]}");`)
   }
   
   for (const senator of senators) {
@@ -90,6 +90,7 @@ async function getEmailAddressesOfDiputados() {
           email : emailDip?.href.substring(7),
           party: affiliationDip?.innerText
         }
+            console.log(dipu)
             return dipu
       })
       allDiputadas.push(diputada)
@@ -110,13 +111,13 @@ async function getEmailAddressesOfDiputados() {
   }
 
   for (const party of listOfParties) {
-    await db(`INSERT INTO parties (party, webpage) VALUES ("${party}", "${webpages[party]}");`)
+    await db(`INSERT INTO parties (party, organ, webpage) VALUES ("${party}", "Congreso de Diputadas", "${webpages[party]}");`)
   }
 
   for (let dipu of allDiputadas) {
     const party = await db(`SELECT id FROM parties WHERE party="${dipu.party}";`)
   
-    await db(`INSERT INTO politicians (name, email_address, msgs_sent, organ, party_id) VALUES ("${dipu.name}", "${dipu.email}", 0, "Congreso de Diputados", "${party?.data[0]?.id}");`)
+    await db(`INSERT INTO politicians (name, email_address, msgs_sent, organ, party_id) VALUES ("${dipu.name}", "${dipu.email}", 0, "Congreso de Diputadas", "${party?.data[0]?.id}");`)
   }
 
 await new Promise((r) => setTimeout(r, 120000));

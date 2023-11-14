@@ -1,7 +1,6 @@
 --
 -- Drop Tables
 --
-
 SET foreign_key_checks = 0;
 DROP TABLE if exists politicians, parties, magics, suggestions;
 SET foreign_key_checks = 1;
@@ -34,3 +33,7 @@ CREATE TABLE suggestions(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     suggestion VARCHAR(50) not null
 );
+
+INSERT INTO magics (magic) VALUES ('cambio climatico');
+INSERT INTO magics (magic) VALUES ('problemas de vivienda');
+INSERT INTO magics (magic) VALUES ('politicas sociales');
