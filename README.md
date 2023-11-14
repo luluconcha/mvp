@@ -10,7 +10,7 @@ For this I used puppeteer, the openAI API, and nodemailer (on top of React and J
 There is one main endpoint, where the user clicks on a crystal ball and receives a message OpenAi-GPT created based on:
 the politician's party official webpage (or the most official webpage I could find) and the theme the user chose (so far either climate change, social policies or housing issues). There is a suggestions database, because why not. 
 
-<img src="data_schema.png" alt="data flow"/>
+<img src="./client/public/data_schema.png" alt="data flow"/>
 
 ## Setup
 
@@ -45,5 +45,5 @@ Then run `npm run scrap` to populate the tables.
 #### CREDIT 
 
 - FONTS :
-Mom'sTypewriter is copyright Christoph Mueller 1997.
-Retro King from dafonts.com
+. Mom'sTypewriter is copyright Christoph Mueller 1997.
+. Retro King from dafonts.com
