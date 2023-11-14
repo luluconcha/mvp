@@ -5,15 +5,17 @@ const puppeteer = require('puppeteer')
 async function addSenatorsToDatabases() {
   //// open a new browser, args are setting the visibility and view
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     defaultViewport: null,
   });
+
   const page = await browser.newPage();
+  
   await page.goto(
     "https://www.senado.es/web/relacionesciudadanos/participacion/senadores/index.html",
     { waitUntil: "domcontentloaded" }
   );
-
+  /// go in the page and 'navigate' it ('evaluate')
   const senators = await page.evaluate(() => {
     const allSenators = document.querySelectorAll(
       "li.alterna three-col, li.three-col"
@@ -34,16 +36,11 @@ async function addSenatorsToDatabases() {
         })
       }
     }
-
     return result
   });
 
-  // for (const party of listOfParties) {
-  //   db(`INSERT INTO politicians (party) VALUES ("${party}")`)
-  // }
   
   const listOfParties = [...new Set(senators.map((senator) => senator.party))]
-  // console.log(listOfParties)
 
   const webpages = {
     "GRUPO PARLAMENTARIO POPULAR EN EL SENADO" : "https://www.pp.es/actualidad/noticias",
@@ -61,49 +58,71 @@ async function addSenatorsToDatabases() {
   }
   
   for (const senator of senators) {
-  // const party_id = await db(`SELECT id FROM parties WHERE party="${senator.party}";`)
+  const party = await db(`SELECT id FROM parties WHERE party="${senator.party}";`)
   
-    await db(`INSERT INTO politicians (name, email_address, msgs_sent, party) VALUES ("${senator.name}", "${senator.email}", 0, "${senator.party}");`)
+    await db(`INSERT INTO politicians (name, email_address, msgs_sent, organ, party_id) VALUES ("${senator.name}", "${senator.email}", 0, "Senado", "${party?.data[0]?.id}");`)
   }
 
-  await new Promise((r) => setTimeout(r, 240000));
+  await new Promise((r) => setTimeout(r, 120000));
   await browser.close();
 }
-
 
 addSenatorsToDatabases();
 
 
+async function getEmailAddressesOfDiputados() {
+  const browser = await puppeteer.launch({ headless:true, defaultViewport: null});
+  const page = await browser.newPage();
+  const numberOfDiputadas = 350;
 
-// async function getEmailAddressesOfDiputados() {
-//   const browser = await puppeteer.launch({ headless:false, defaultViewport: null});
-//   const page = await browser.newPage();
-//   let numberOfDiputados = 350;
-//   for (let i = 0; i < numberOfDiputados; i++) {
-//     await page.goto("https://www.congreso.es/es/busqueda-de-diputados?p_p_id=diputadomodule&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_diputadomodule_mostrarFicha=true&codParlamentario="+i+"&idLegislatura=XV&mostrarAgenda=false", {waitUntil: "domcontentloaded"})
-//     let emails = await page.evaluate(() => {
-//       const email = document.waitForSelector("div.email-dip > a")
-//       console.log(email)
-//     })
-//   }
+  const allDiputadas = []
 
-// await page.goto("https://www.congreso.es/es/busqueda-de-diputados", {waitUntil: "domcontentloaded"})
+    for (let i = 0; i < numberOfDiputadas; i++) {
+      await page.goto(`https://www.congreso.es/es/busqueda-de-diputados?p_p_id=diputadomodule&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&_diputadomodule_mostrarFicha=true&codParlamentario=${i}&idLegislatura=XV&mostrarAgenda=false`,
+          {waitUntil: "domcontentloaded"})
 
-// const addresses = await page.evaluate(async () => {
-//   const bodyOfPage = document.querySelector("#_diputadomodule_contentPaginationDiputados > table > tbody")
-//   for (let dip in bodyOfPage) {
-//     const nextLink = document.querySelector(`${dip} > tr > th > a`)
-//     await page.goto(nextLink.href)
-//     const getMailDip = await page.evaluate(async () => {
-//       const email = document.waitForSelector("div.email-dip > a").href
-      
-//     })
-//   }
-// })
+      let diputada = await page.evaluate(() => {
+        const emailDip = document?.querySelector("div.email-dip > a")
+        const nameDip = document?.querySelector("div.nombre-dip")
+        const affiliationDip = document?.querySelector("div.grupo-dip > a")
+        const dipu = {
+          name: nameDip?.innerText,
+          email : emailDip?.href.substring(7),
+          party: affiliationDip?.innerText
+        }
+            return dipu
+      })
+      allDiputadas.push(diputada)
+    }
 
-// await new Promise(r => setTimeout(r, 240000));
-// await browser.close()
+  const listOfParties = [...new Set(allDiputadas.map((diputada) => diputada.party))]
 
-// }
+  const webpages = {
+    "G.P. Popular en el Congreso ( GP )" : "https://www.pp.es/actualidad/noticias",
+    "G.P. VOX ( GVOX )" : "https://www.voxespana.es/programa/programa-electoral-vox",
+    "G.P. Socialista ( GS ) " : "https://www.psoe.es/actualidad/noticias-actualidad/",
+    "G.P. Plurinacional SUMAR ( GSUMAR )" : "https://movimientosumar.es/wp-content/uploads/2023/07/Un-Programa-para-ti.pdf",
+    "G.P. Mixto ( GMx )" : "https://www.congreso.es/es/proposiciones-de-ley",
+    "G.P. Republicano ( GR )" : "https://duckduckgo.com/?q=congreso+de+diputados+espa%C3%B1a&atb=v309-1&iar=news&ia=news",
+    "G.P. Junts per Catalunya ( GJxCAT )" : "https://junts.cat/actualitat",
+    "G.P. EH Bildu ( GEH Bildu )" : "https://ehbildu.eus/es#albisteak",
+    "G.P. Vasco (EAJ-PNV) ( GV (EAJ-PNV) )" : "https://www.eaj-pnv.eus/es/noticias/"
+  }
 
-// getEmailAddressesOfDiputados();
+  for (const party of listOfParties) {
+    await db(`INSERT INTO parties (party, webpage) VALUES ("${party}", "${webpages[party]}");`)
+  }
+
+  for (let dipu of allDiputadas) {
+    const party = await db(`SELECT id FROM parties WHERE party="${dipu.party}";`)
+  
+    await db(`INSERT INTO politicians (name, email_address, msgs_sent, organ, party_id) VALUES ("${dipu.name}", "${dipu.email}", 0, "Congreso de Diputados", "${party?.data[0]?.id}");`)
+  }
+
+await new Promise((r) => setTimeout(r, 120000));
+await browser.close()
+
+}
+
+getEmailAddressesOfDiputados();
+

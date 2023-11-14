@@ -3,7 +3,7 @@
 --
 
 SET foreign_key_checks = 0;
-DROP TABLE if exists politicians, parties;
+DROP TABLE if exists politicians, parties, magics, suggestions;
 SET foreign_key_checks = 1;
 
 --
@@ -12,6 +12,7 @@ SET foreign_key_checks = 1;
 CREATE TABLE parties(
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     party VARCHAR(200) null,
+    organ VARCHAR(50) null,
     webpage VARCHAR(500) null
 );
 
@@ -20,7 +21,8 @@ CREATE TABLE politicians(
     name VARCHAR(200) not null, 
     email_address VARCHAR(200) not null,
     msgs_sent INT null,
-    party VARCHAR(200) null
+    organ VARCHAR(50) null,
+    party_id INT null
 );
 
 CREATE TABLE magics(

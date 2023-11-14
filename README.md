@@ -1,13 +1,29 @@
 # MVP
 
+This is a student project for Codeop's fullstack bootcamp.
+
+The idea is to create an easy-to-use way for people to reach their representatives. 
+It's aimed at young people, the clinically-online kind who flipped Gamestop's stocks. 
+
+For this I used puppeteer, the openAI API, and nodemailer.
+
+![data_schema](data_schema.png)
+
 
 ## Setup
+
 
 ### Dependencies
 
 Run `npm install` in the project folder to install dependencies related to Express (the server).
 
 `cd client` and run `npm install` install dependencies related to React (the client).
+
+Install puppeteer (follow web instructions, it's easy) and nodemailer (bis).
+
+Rename the `.env.example` just `.env` and add your own data. I am leaving the access keys for OpenAI (MASTER_MAIL, MAIL_PASS, OPENAI_API_KEY). You can use them! There is some credit on the account.
+
+Use another email account to receive/send test emails and enable a SMTP connection. 
 
 ### Database Prep
 

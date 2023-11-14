@@ -6,7 +6,7 @@ const OpenAI = require("openai")
 const nodemailer = require('nodemailer') 
 const openai = new OpenAI({apiKey : `${process.env.OPENAI_API_KEY}`})
 
-
+// actually sends the email (uses nodemailer)
 async function sendMail(email_address, text) {
   try {
      const transporter = nodemailer.createTransport({
@@ -14,8 +14,8 @@ async function sendMail(email_address, text) {
     port: 1025,
     secure: false,
     auth: {
-      user: 'greenarmyco@protonmail.com',
-      pass: 'Cv4lrfCgzz2EEvhnHnE9Dw'
+      user: `${process.env.MASTER_EMAIL}`,
+      pass: `${process.env.PROTONMAIL_SMTP_PASS}`
     },
     tls: {
       rejectUnauthorized: false
@@ -23,10 +23,11 @@ async function sendMail(email_address, text) {
     })
     const message = {
       from: `${process.env.MASTER_EMAIL}`,
-      to: `${process.env.MASTER_EMAIL}`,
+      to: [`${process.env.MASTER_EMAIL}`, `${email_address}`],
       subject: 'Un mensaje de Las Verdas Co.',
       text: `${text}`,
-      html: `<p> ${text} </p>`
+      html: `<p> ${text} </p><br /> <br />
+            <h6> Las Verdas Co. es un proyecto estudiantil que da voz a gente que busca gritar. <h6>`
     }
     const info = await transporter.sendMail(message)
     const response = `Email sent: ${info.response}`
@@ -98,9 +99,10 @@ router.post("/suggestions", async function(req, res) {
   }
 });
 
+// this one doesn't work
 async function updateMsgsSentSpecificPolitician(id) {
   try {
-    await db (`UPDATE politicians SET msgs_sent=msgs_sent+1 WHERE id=${id};`)
+    await db(`UPDATE politicians SET msgs_sent=msgs_sent+1 WHERE id=${id};`)
     res.status(200).send({message: "message count has been updated"})
   } catch (err) {
     res.status(500).send({});
@@ -116,6 +118,7 @@ async function createMailWithParams(magic){
     const name = politician.name
     const chosenMagic = magic.magic
 
+    await updateMsgsSentSpecificPolitician(politician.id)
     const data = { politician : politician, message: "this is a test", magic: chosenMagic}
     
     return data
@@ -135,7 +138,7 @@ async function createMailWithParams(magic){
     //          `,
     //     max_tokens: 250,
     //     best_of: 3,
-    //     temperature: 0.2,  /// from 0 to 2 how funky do you want it
+    //     temperature: 0.2,  /// from 0 to 2 how funky do you want it (actually makes it kinda loopy)
     //     frequency_penalty: 0.7, // from 2 (min) to -2 (max), how much do you want it to use new words 
     //   })
 

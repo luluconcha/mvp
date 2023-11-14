@@ -35,10 +35,15 @@
 }
 
 /* trying out stuff that is not working with these damn buttons */
-#magic1:active #magic1:hover{
+#magic1:focus{
   border: 5px dashed #A4A19D;
   border-radius: 22px;
-  padding: 0.5px;
+}
+
+#homebutton {
+  text-align: center;
+  justify-content: center;
+  margin: 50px;
 }
 
 body {
@@ -139,7 +144,3 @@ button:focus-visible {
 
 
 
-#homebutton {
-  text-align: center;
-  justify-content: center;
-}
