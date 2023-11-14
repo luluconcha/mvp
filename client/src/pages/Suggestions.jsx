@@ -13,12 +13,12 @@ async function handleSuggestion() {
         const response = await fetch("/api/suggestions", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({magic: input})
+            body: JSON.stringify({ suggestion : input})
         });
         if (!response.ok) throw new Error(`Oops! ${response.status} ${response.statusText}`);
         setMessage(response.message)
     } catch (error) {
-        setError(error.message);
+        setError(error);
         console.log("the gods have rejected your suggestion");
     } finally {
         setLoading(false);
@@ -41,10 +41,10 @@ const handleSubmit = event => {
     <div>Suggestions <br/><br/>
 
         <input id="suggestions" type="text" value={input} onChange={e => handleInput(e)}></input> <br/><br/>
-        <button type="submit" onClick={e => handleSubmit(e)}> BURN IT </button><br/><br/>
-        <br/>
-        {message}
-        <br/><br/>
+            <button type="submit" onClick={e => handleSubmit(e)}> BURN IT </button><br/><br/>
+            <br/>
+            {message}
+            <br/><br/>
         <Link id="homebutton" to="/"><button> go home </button> </Link>
     </div>
   )

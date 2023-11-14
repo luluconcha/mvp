@@ -4,6 +4,42 @@
   font-family: 'retro_gaming';
 }
 
+#magic1 {
+  background-image: url("cloud.png");
+  background-size: cover;
+  size: 300px;
+  padding: 50px;
+  margin: 10px 50px 10px 50px;
+  image-rendering: pixelated;
+  border-radius: 10px;
+}
+
+#magic2 {
+  background-image: url("brujula.png");
+  background-size: cover;
+  size: 300px;
+  padding: 50px;
+  margin: 10px 50px 10px 50px;
+  image-rendering: pixelated;
+  border-radius: 10px; 
+}
+
+#magic3 {
+  background-image: url("chain.png");
+  background-size: cover;
+  size: 300px;
+  padding: 50px;
+  margin: 10px 50px 10px 50px;
+  image-rendering: pixelated;
+  border-radius: 10px;  
+}
+
+/* trying out stuff that is not working with these damn buttons */
+#magic1:active #magic1:hover{
+  border: 5px dashed #A4A19D;
+  border-radius: 22px;
+  padding: 0.5px;
+}
 
 body {
   margin: 0;
@@ -17,6 +53,11 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+}
+
+footer {
+  text-align: center;
+  justify-content: center;
 }
 
 button {
@@ -34,9 +75,10 @@ button {
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  border: whitesmoke;
 }
 
 .mainMenu {
@@ -50,12 +92,54 @@ button:focus-visible {
   src: local('retro_gaming'), url(./fonts/retro_gaming.ttf) format('truetype');
 }
 
+@font-face {
+  font-family: 'Moms_typewriter';
+  src: local('Moms_typewriter'), url(./fonts/Moms_typewriter.ttf) format('truetype');
+}
+
 .total_msgs {
-  position: absolute;
+  position: flex;
   bottom: 0;
   text-align:center;
 }
 
-@keyframes loading {
-  
+.choosemagic {
+  display: block grid;
+  border: 5px dashed #A4A19D;
+  border-radius: 22px;
+  padding: 1em;
+  float: right;
+  margin: 1em;
+}
+
+.sendMailPage {
+  display: block;
+  border: 5px dashed #A4A19D;
+  border-radius: 22px;
+  padding: 1em;
+}
+
+#crystalball {
+  float: left;
+  padding: 1em;
+  image-rendering: pixelated;
+  width: 120%;
+}
+
+.about_text {
+  font-family: 'Moms_typewriter';
+  background-color: rgb(210, 230, 240);
+  color: black;
+  margin: 3em;
+  text-wrap: pretty;
+  border-radius: 13px;
+  padding: 4em;
+  line-height: 2em;
+}
+
+
+
+#homebutton {
+  text-align: center;
+  justify-content: center;
 }

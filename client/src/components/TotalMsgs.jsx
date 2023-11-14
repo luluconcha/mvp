@@ -23,6 +23,6 @@ export default function TotalMsgs() {
     }
 
     return (
-    <div>Total Msgs: {totalMsgs}</div>
+    <div> we've sent {totalMsgs} messages total!</div>
   )
 }

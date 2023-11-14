@@ -1,14 +1,17 @@
 import React from 'react'
-import {useState} from 'react'
-import {Link} from 'react-router-dom'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import ChooseMagic from '../components/ChooseMagic.jsx'
 import MessageSent from '../components/MessageSent.jsx'
+// import CrystalBall from '../components/CrystalBallSprite.jsx'
+
 
 export default function SendMailPage() {
   const [data, setData] = useState([])
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [magicID, setMagic] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [ready, setReady] = useState(false)
 
 async function getData() {
   try {
@@ -19,9 +22,7 @@ async function getData() {
     /// data.name, data.webpage, data.message
   } catch (error) {
     setError(error.message)
-  } finally {
-    setLoading(false)
-  }
+  } 
 }
 
 async function handleClick (event) {
@@ -29,26 +30,40 @@ async function handleClick (event) {
   setLoading(true)
   setError("")
   getData()
+  setTimeout(() => {
+    setLoading(false);
+    setReady(true);
+  }, 8000);
 }
 
+function setAndClean() {
+  setLoading(false)
+  setReady(false)
+  setError("")
+  setMagic(1)
+}
 
   return (
-    <div>Are you ready?
-
-    {/* <button onClick={(e) => handleClick(e)}>THEBUTTONOFTRUTH</button> */}
-    <img src="crystal_ball.gif" onClick={(e) => handleClick(e)}/>
-    <div>
-      <ChooseMagic setMagic={setMagic}></ChooseMagic>
-      <div> you chose: {magicID}</div>
-    </div>
-    { error ? <div id="error"> {error} </div>
-    : loading ? <img src="" /> 
-    : <div> NOW LET'S SEE: <br /> {data?.name} {data?.webpage} {data?.message} {data?.magic}
-      <MessageSent to={data?.name} message={data?.message}></MessageSent>
+    <div> <h3> ARE YOU READY? </h3> <br />
+      <div className="sendMailPage">
+        
+      { loading ? <img src="crystal_ball.gif" /> 
+        : <img src="crystal_ball_still.png" onClick={(e) => handleClick(e)}/>}
+          <div className="choosemagic">
+            <ChooseMagic setMagic={setMagic}></ChooseMagic>
+            you chose: {magicID}
+          </div>
+        <div>
+          { error ? <div id="error"> {error} </div>
+          : ready ? <MessageSent data={data} setAndClean={setAndClean}></MessageSent>
+          : <> there's a crystal ball in your future </>}
+        </div>
       </div>
-    }
-
+    
+    <footer>
     <Link id="homebutton" to="/"><button> go home </button> </Link>
+      </footer>
+    
     </div>
     
   )

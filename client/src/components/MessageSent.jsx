@@ -1,13 +1,15 @@
-import React from 'react'
+import {Link} from 'react-router-dom'
 
-export default function MessageSent({to, message}) {
+export default function MessageSent({data, setAndClean}) {
   
   return (
     <div>
-      Congratulations! 
-      You sent a message to {to}.
-      <p> The text was: {message} </p>
-      <button type="reset"> x </button>
+      Congratulations! <br /> <br />
+      You chose: {data?.magic} <br />
+      You sent a message to {data?.politician?.name}. <br />
+      <p> The text was: {data?.message} </p>
+
+      <button onClick={setAndClean}> x </button>
     </div>
   )
 }

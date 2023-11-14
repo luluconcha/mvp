@@ -23,7 +23,8 @@
     "nodemon": "^3.0.1",
     "openai": "^4.16.1",
     "puppeteer": "^19.11.1",
-    "sendmail": "^1.6.1"
+    "sendmail": "^1.6.1",
+    "styled-components": "^6.1.1"
   },
   "types": "module",
   "description": "",

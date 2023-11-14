@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+
 
 export default function ChooseMagic({ setMagic }) {
-  
-  const handleClick = async event => {
-    await setMagic(event.target.value);
-    }; 
-  
-  return (
-    <div> CHOOSE YOUR MAGIC
+  useEffect(() => {
+    setMagic();
+  }, []);
 
-        <button><img src="cloud.png" value={1} onClick={(e) => handleClick(e)}/></button>
-        
-        <button value={1} onClick={(e) => setMagic(e.target.value)} > </button>
-        <button value={2} onClick={(e) => setMagic(e.target.value)} > </button> 
-        <button value={3} onClick={(e) => setMagic(e.target.value)} > </button>
+
+  return (
+    <div> CHOOSE YOUR MAGIC <br />
+
+        <button id="magic1" value={1} onClick={(e) => setMagic(e.target.value)} >  </button><br />
+        <button id="magic2" value={2} onClick={(e) => setMagic(e.target.value)} >  </button><br />
+        <button id="magic3" value={3} onClick={(e) => setMagic(e.target.value)} >  </button><br />
+
+       
     </div>
   )
 }

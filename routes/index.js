@@ -7,28 +7,39 @@ const nodemailer = require('nodemailer')
 const openai = new OpenAI({apiKey : `${process.env.OPENAI_API_KEY}`})
 
 
-// async function sendMail() {
-//   const transporter = nodemailer.createTransport({
-//     host: '127.0.0.1',
-//     port: 1025,
-//     secure: 'STARTTLS',
-//     auth: {
-//       user: 'greenarmyco@protonmail.com',
-//       pass: 'Cv4lrfCgzz2EEvhnHnE9Dw'
-//     }
-//   })
-//   const message = {
-//     from: 'greenarmyco@protonmail.com ',
-//     to: 'greenarmyco@protonmail.com',
-//     subject: 'This time I\'m using Nodemailer',
-//     text: 'This is my first email sent with Nodemailer and Mailtrap. Does it look good?',
-//     html: '<p>This is my first email sent with Nodemailer and Mailtrap. Does it look good?</p>'
-//   }
-//   console.log("am I here?")
-//   const info = await transporter.sendMail(message)
-//   console.log(`Email sent: ${info.response}`) 
-// }
-// sendMail()
+async function sendMail(email_address, text) {
+  try {
+     const transporter = nodemailer.createTransport({
+    host: '127.0.0.1',
+    port: 1025,
+    secure: false,
+    auth: {
+      user: 'greenarmyco@protonmail.com',
+      pass: 'Cv4lrfCgzz2EEvhnHnE9Dw'
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+    })
+    const message = {
+      from: `${process.env.MASTER_EMAIL}`,
+      to: `${process.env.MASTER_EMAIL}`,
+      subject: 'Un mensaje de Las Verdas Co.',
+      text: `${text}`,
+      html: `<p> ${text} </p>`
+    }
+    const info = await transporter.sendMail(message)
+    const response = `Email sent: ${info.response}`
+    console.log(response)
+    return response
+
+  } catch (err) {
+    return err;
+  }
+
+
+}
+
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -39,6 +50,9 @@ router.get('/createmail/:id', async (req, res) =>{
   try {
     const magic = await getMagic(`${req.params.id}`)
     const data = await createMailWithParams(magic)
+    setTimeout(() => {
+      sendMail(data.politician.email_address, data.message)
+    }, 2000);
     res.send(data)
   } catch (err) {
     res.status(400).send(err)
@@ -87,20 +101,22 @@ router.post("/suggestions", async function(req, res) {
 async function updateMsgsSentSpecificPolitician(id) {
   try {
     await db (`UPDATE politicians SET msgs_sent=msgs_sent+1 WHERE id=${id};`)
-    res.send(200).send({message: "message count has been updated"})
+    res.status(200).send({message: "message count has been updated"})
   } catch (err) {
     res.status(500).send({});
   }
 }
+
 async function createMailWithParams(magic){
 
     const politician = await getRandomPolitician()
     const response = await getWebpage(politician.party)
-
+    await db (`UPDATE politicians SET msgs_sent=msgs_sent+1 WHERE id=${politician.id};`)
     const webpage = response[0].webpage
     const name = politician.name
     const chosenMagic = magic.magic
-    const data = { name : politician.name, webpage : response[0].webpage, message: "this is a test", magic: chosenMagic}
+
+    const data = { politician : politician, message: "this is a test", magic: chosenMagic}
     
     return data
     
@@ -108,15 +124,15 @@ async function createMailWithParams(magic){
     //   const completion = await openai.completions.create({
     //     model: "gpt-3.5-turbo-instruct",
     //     prompt: `Estamos escribiendo un mensaje a un politico.
-    //     Analiza la página : ${webpage} para identificar puntos en relación con ${chosenMagic}.
-    //     Identifica areas de preocupación y sugiere 1 acción para cambio positivo en relación con ${chosenMagic}.
-    //     Compone un mensaje crítico, breve y directo dirigido a ${name}.
-    //     Formato deseado:
-    //     Entre 3 y 5 frases. Pretende que lo visto en la página web ha sido leído en las noticias.
-    //     Hola {nombre}, le escribo sobre {tema}. Creo que {porqué es importante}, y quiero sugerir {política concreta}. 
-    //     Cordialmente,
-    //     Las Verdas Co.
-    //     `,
+    //           Analiza la página : ${webpage} para identificar puntos en relación con ${chosenMagic}.
+    //           Identifica areas de preocupación y sugiere 1 acción para cambio positivo en relación con ${chosenMagic}.
+    //           Compone un mensaje crítico, breve y directo dirigido a ${name}.
+    //           Formato deseado:
+    //           Entre 3 y 5 frases. Pretende que lo visto en la página web ha sido leído en las noticias.
+    //           Hola {nombre}, le escribo sobre {tema}. Creo que {porqué es importante}, y quiero sugerir {política concreta}. 
+    //           Cordialmente,
+    //           Las Verdas Co.
+    //          `,
     //     max_tokens: 250,
     //     best_of: 3,
     //     temperature: 0.2,  /// from 0 to 2 how funky do you want it
@@ -124,8 +140,9 @@ async function createMailWithParams(magic){
     //   })
 
     //   const mail = completion.choices[0].text;
-    //   const data = { name : name, message: mail}
+    //   const data = { politician : politician, message : mail, magic : chosenMagic }
     //   // await updateMsgsSentSpecificPolitician(politician.id) 
+      
     //   return data
 
     // } catch (err) {
@@ -133,7 +150,6 @@ async function createMailWithParams(magic){
     // }
     
 }
-
 
 router.get("/politicians/total_msgs", async (req, res) => {
   try {

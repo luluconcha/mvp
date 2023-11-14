@@ -5,6 +5,10 @@ import SendMailPage from './pages/SendMailPage'
 import MainMenu from "./pages/MainMenu"
 import Suggestions from "./pages/Suggestions"
 import TotalMsgs from "./components/TotalMsgs"
+// import { Animated, Text, View, StyleSheet, Button, SafeAreaView } from 'react-native'
+import { useRef } from 'react'
+
+
 
 function App() {
 
@@ -22,10 +26,12 @@ function App() {
         
 
      </Routes>
-     
+     <footer>
      <div className="total_msgs">
         <TotalMsgs></TotalMsgs>
      </div>
+     </footer>
+  
      
     </div>
   )
