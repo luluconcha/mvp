@@ -6,7 +6,10 @@ const OpenAI = require("openai")
 const nodemailer = require('nodemailer') 
 const openai = new OpenAI({apiKey : `${process.env.OPENAI_API_KEY}`})
 
-// actually sends the email (uses nodemailer)
+// this fct actually sends the email (uses nodemailer)
+// this fct is called in router.get(createmail/id) with a 2sec timeout because some text was coming back "undefined"
+// resolved other bugs at the time so not sure the timeout was necessary
+// but there are so many factors everywhere and everything is so finicky, I kept it.
 async function sendMail(email_address, text) {
   try {
      const transporter = nodemailer.createTransport({
@@ -47,6 +50,9 @@ router.get('/', function(req, res, next) {
   res.send({msg: "we're here"})
 });
 
+// here we call the getMagic function (based on user choice) and send it to the createMailWithParams fct
+// then call the sendMail fct
+// we return what the createMailWithParams has returned 
 router.get('/createmail/:id', async (req, res) =>{
   try {
     const magic = await getMagic(`${req.params.id}`)
@@ -89,6 +95,7 @@ async function getWebpage(party) {
   }
 }
 
+// user can add suggestions
 router.post("/suggestions", async function(req, res) {
   const { suggestion } = req.body;
   try {
@@ -100,6 +107,7 @@ router.post("/suggestions", async function(req, res) {
 });
 
 // this one is meant to be called inside createMailWithParams but it just makes it break.
+// so I'm just calling the actual db call
 async function updateMsgsSentSpecificPolitician(id) {
   try {
     await db(`UPDATE politicians SET msgs_sent=msgs_sent+1 WHERE id=${id};`)
@@ -155,6 +163,7 @@ async function createMailWithParams(magic){
     }
     
 }
+
 
 router.get("/politicians/total_msgs", async (req, res) => {
   try {

@@ -19,7 +19,6 @@ async function getData() {
     if (!res.ok) throw new Error(`Oops! ${res.status} ${res.statusText}`)
     const data = await res.json()
     setData(data)
-    /// data.name, data.webpage, data.message
   } catch (error) {
     setError(error.message)
   } 
@@ -43,11 +42,13 @@ function setAndClean() {
   setMagic(1)
 }
 
+/// this is a bit of a mess with all the loading and ready and error, maybe it could be better
+// also I wanted the magic to be 1 by default but at some point it stopped working
   return (
     <div> <h3> ARE YOU READY? </h3> <br />
       <div className="sendMailPage">
         
-      { (loading && !error) ? <img src="crystal_ball.gif" /> 
+      { (!error && loading) ? <img src="crystal_ball.gif" /> 
         : <img src="crystal_ball_still.png" onClick={(e) => handleClick(e)}/>}
           <div className="choosemagic">
             <ChooseMagic setMagic={setMagic}></ChooseMagic>

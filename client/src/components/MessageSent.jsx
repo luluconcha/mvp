@@ -6,7 +6,7 @@ export default function MessageSent({data, setAndClean}) {
     <div>
       Congratulations! <br /> <br />
       You chose: {data?.magic} <br />
-      You sent a message to {data?.politician?.name}. <br />
+      You sent a message to {data?.politician?.name} from {data?.politician?.organ}. <br />
       <p> The text was: {data?.message} </p>
 
       <button onClick={setAndClean}> x </button>

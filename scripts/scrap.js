@@ -4,7 +4,8 @@ const puppeteer = require('puppeteer')
 
 async function addSenatorsToDatabases() {
   //// open a new browser, args are setting the visibility and view
-  const browser = await puppeteer.launch({
+  // headless : true to see the page(s) open
+   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null,
   });
@@ -22,7 +23,9 @@ async function addSenatorsToDatabases() {
     );
 
     const result = [];
-    
+
+    // querySelectorAll returns an object all the individual sections
+    // from there I grab different data with the following loop
     for (let sen of allSenators) {
       let email = sen.querySelector("span.col-3 > a");
       let nameSen = sen.querySelector("span.col-1 > a");
@@ -39,7 +42,7 @@ async function addSenatorsToDatabases() {
     return result
   });
 
-  
+  // creates an array with every party only once
   const listOfParties = [...new Set(senators.map((senator) => senator.party))]
 
   const webpages = {
@@ -93,9 +96,11 @@ async function getEmailAddressesOfDiputados() {
             console.log(dipu)
             return dipu
       })
+      // push into array before exiting the loop and defining another dipu
       allDiputadas.push(diputada)
     }
 
+  // creates an array with every party only once
   const listOfParties = [...new Set(allDiputadas.map((diputada) => diputada.party))]
 
   const webpages = {

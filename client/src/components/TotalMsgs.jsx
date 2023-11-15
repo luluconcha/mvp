@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react'
 export default function TotalMsgs() {
     const [totalMsgs, setTotalMsgs] = useState(0)
 
-    ////// this breaks, why?
+    ////// this breaks, I don't know why! so they're updating in the database but not the total on the page
     // useEffect(() => {
     //     getTotal();
     //   }, []);
