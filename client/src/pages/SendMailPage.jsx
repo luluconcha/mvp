@@ -47,7 +47,7 @@ function setAndClean() {
     <div> <h3> ARE YOU READY? </h3> <br />
       <div className="sendMailPage">
         
-      { loading ? <img src="crystal_ball.gif" /> 
+      { (loading && !error) ? <img src="crystal_ball.gif" /> 
         : <img src="crystal_ball_still.png" onClick={(e) => handleClick(e)}/>}
           <div className="choosemagic">
             <ChooseMagic setMagic={setMagic}></ChooseMagic>
