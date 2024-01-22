@@ -38,7 +38,7 @@ Run `npm run migrate` in your **TERMINAL**, in the **project** folder. This will
 
 ### Run Your Development Servers
 
-- ****** VERY IMPORTANT**** When you are testing out the code, comment out the whole try/catch part of the createMailWithParams(magic) function in index.js. The two lines above are return the politician's data and . 
+- ****** VERY IMPORTANT**** When you are testing out the code, comment out the whole try/catch part of the createMailWithParams(magic) function in index.js. The two commented lines above can be used for testing. 
 ****** IF YOU DO NOT DO THIS you will spend tokens everytime you save. Guess how I found out*********
 
 - Run `npm start` in project directory to start the Express server on port 4000
